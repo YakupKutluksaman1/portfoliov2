@@ -19,7 +19,10 @@ export default function Home() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+<<<<<<< HEAD
   const [showCVModal, setShowCVModal] = useState(false);
+=======
+>>>>>>> 98218a74d683e024c4ccd0f00e9b85b3d9e1e67b
 
   useEffect(() => {
     setIsMounted(true);
@@ -152,6 +155,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-blue-400/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
               </button>
               <button
+<<<<<<< HEAD
                 onClick={() => setShowCVModal(true)}
                 className="group relative bg-purple-600/10 border border-purple-500/30 text-white font-medium py-3 px-8 rounded-full transition-all duration-300 hover:bg-purple-600/20 overflow-hidden"
               >
@@ -159,6 +163,8 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-purple-600/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
               </button>
               <button
+=======
+>>>>>>> 98218a74d683e024c4ccd0f00e9b85b3d9e1e67b
                 onClick={() => scrollToSection('contact')}
                 className="group relative bg-blue-600/10 border border-blue-500/30 text-white font-medium py-3 px-8 rounded-full transition-all duration-300 hover:bg-blue-600/20 overflow-hidden"
               >
@@ -166,106 +172,111 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-600/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
               </button>
             </div>
+<<<<<<< HEAD
 
-            {/* CV Modal */}
-            {showCVModal && (
-              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className="bg-white/5 backdrop-blur-sm p-8 rounded-2xl border border-white/10 max-w-2xl w-full mx-4">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-2xl font-semibold text-white">CV Request Form</h3>
-                    <button
-                      onClick={() => setShowCVModal(false)}
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      const formData = new FormData(e.currentTarget);
-                      const name = formData.get('name');
-                      const email = formData.get('email');
-                      const phone = formData.get('phone');
-                      const message = formData.get('message');
-
-                      const mailtoLink = `mailto:yakup.kutluksaman1@gmail.com?subject=${encodeURIComponent(`CV Request from ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}`)}`;
-
-                      window.location.href = mailtoLink;
-                      setShowCVModal(false);
-                    }}
-                    className="space-y-6"
-                  >
-                    <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm text-gray-300">Full Name</label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
-                        placeholder="Your full name"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm text-gray-300">Email</label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
-                        placeholder="Your email address"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="phone" className="text-sm text-gray-300">Phone</label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
-                        placeholder="Your phone number"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="message" className="text-sm text-gray-300">Message</label>
-                      <textarea
-                        id="message"
-                        name="message"
-                        required
-                        rows={4}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all resize-none"
-                        placeholder="Your message..."
-                      ></textarea>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-[1.02] focus:scale-[0.98]"
-                    >
-                      Send Request
-                    </button>
-                  </form>
-                </div>
-              </div>
-            )}
+  {/* CV Modal */ }
+  {
+    showCVModal && (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white/5 backdrop-blur-sm p-8 rounded-2xl border border-white/10 max-w-2xl w-full mx-4">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-semibold text-white">CV Request Form</h3>
+            <button
+              onClick={() => setShowCVModal(false)}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
           </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const name = formData.get('name');
+              const email = formData.get('email');
+              const phone = formData.get('phone');
+              const message = formData.get('message');
 
-          {/* Aşağı ok animasyonu */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-            <svg className="w-6 h-6 text-white/30 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
-          </div>
-        </section>
+              const mailtoLink = `mailto:yakup.kutluksaman1@gmail.com?subject=${encodeURIComponent(`CV Request from ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}`)}`;
 
-        {/* About Section */}
-        <section id="about" className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+              window.location.href = mailtoLink;
+              setShowCVModal(false);
+            }}
+            className="space-y-6"
+          >
+            <div className="space-y-2">
+              <label htmlFor="name" className="text-sm text-gray-300">Full Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
+                placeholder="Your full name"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm text-gray-300">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
+                placeholder="Your email address"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="phone" className="text-sm text-gray-300">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
+                placeholder="Your phone number"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="message" className="text-sm text-gray-300">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows={4}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all resize-none"
+                placeholder="Your message..."
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-600 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-[1.02] focus:scale-[0.98]"
+            >
+              Send Request
+            </button>
+          </form>
+        </div>
+      </div>
+    )
+  }
+=======
+>>>>>>> 98218a74d683e024c4ccd0f00e9b85b3d9e1e67b
+          </div >
+
+    {/* Aşağı ok animasyonu */ }
+    < div className = "absolute bottom-8 left-1/2 transform -translate-x-1/2" >
+      <svg className="w-6 h-6 text-white/30 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+          </div >
+        </section >
+
+    {/* About Section */ }
+    < section id = "about" className = "py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden" >
           <div className="absolute inset-0">
             {/* Hafif dalgalanma efekti */}
             <div className="absolute inset-0 overflow-hidden">
@@ -366,10 +377,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section >
 
-        {/* Skills Section */}
-        <section id="skills" className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+    {/* Skills Section */ }
+    < section id = "skills" className = "py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden" >
           <div className="absolute inset-0">
             {/* Ana gradyan arka plan */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-black to-purple-900/20"></div>
@@ -655,10 +666,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section >
 
-        {/* Projects Section */}
-        <section id="projects" className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+    {/* Projects Section */ }
+    < section id = "projects" className = "py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden" >
           <div className="absolute inset-0">
             {/* Dairesel gradyan */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(30,64,175,0.1)_0%,transparent_50%)] animate-pulse-slow"></div>
@@ -916,10 +927,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section >
 
-        {/* AI News Section */}
-        <section id="news" className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+    {/* AI News Section */ }
+    < section id = "news" className = "py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden" >
           <div className="absolute inset-0">
             {/* Animasyonlu arka plan */}
             <div className="absolute inset-0 overflow-hidden">
@@ -991,10 +1002,10 @@ export default function Home() {
               )}
             </div>
           </div>
-        </section>
+        </section >
 
-        {/* Contact Section */}
-        <section id="contact" className="py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden">
+    {/* Contact Section */ }
+    < section id = "contact" className = "py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 relative overflow-hidden" >
           <div className="absolute inset-0">
             {/* Yumuşak dalgalanma */}
             <div className="absolute inset-0 overflow-hidden">
@@ -1093,6 +1104,7 @@ export default function Home() {
                     onSubmit={(e) => {
                       e.preventDefault();
                       const formData = new FormData(e.currentTarget);
+<<<<<<< HEAD
                       const name = formData.get('name');
                       const email = formData.get('email');
                       const phone = formData.get('phone');
@@ -1102,6 +1114,16 @@ export default function Home() {
 
                       window.location.href = mailtoLink;
                       setShowCVModal(false);
+=======
+                      const subject = formData.get('subject');
+                      const message = formData.get('message');
+                      const name = formData.get('name');
+                      const email = formData.get('email');
+
+                      const mailtoLink = `mailto:yakup.kutluksaman1@gmail.com?subject=${encodeURIComponent(`${subject} - from ${name}`)}&body=${encodeURIComponent(`From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+
+                      window.location.href = mailtoLink;
+>>>>>>> 98218a74d683e024c4ccd0f00e9b85b3d9e1e67b
                     }}
                     className="space-y-6"
                   >
@@ -1130,6 +1152,7 @@ export default function Home() {
                     </div>
 
                     <div className="space-y-2">
+<<<<<<< HEAD
                       <label htmlFor="phone" className="text-sm text-gray-300">Phone</label>
                       <input
                         type="tel"
@@ -1138,8 +1161,18 @@ export default function Home() {
                         required
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
                         placeholder="Your phone number"
+=======
+                      <label htmlFor="subject" className="text-sm text-gray-300">Subject</label>
+                      <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        required
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all"
+                        placeholder="Message subject"
+>>>>>>> 98218a74d683e024c4ccd0f00e9b85b3d9e1e67b
                       />
-                    </div>
+                    </div >
 
                     <div className="space-y-2">
                       <label htmlFor="message" className="text-sm text-gray-300">Message</label>
@@ -1159,25 +1192,25 @@ export default function Home() {
                     >
                       Send
                     </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+                  </form >
+                </div >
+              </div >
+            </div >
+          </div >
+        </section >
 
-        {/* Footer Section */}
-        <footer className="py-8 relative">
-          <div className="container mx-auto px-4">
-            <div className="text-center text-gray-400 text-sm">
-              <p>© {new Date().getFullYear()} Yakup Kutluksaman. All rights reserved.</p>
-              <p className="mt-2">This website and its content is protected by copyright law. Any unauthorized use or reproduction of the materials on this site is strictly prohibited.</p>
-            </div>
-          </div>
-        </footer>
-      </main>
+    {/* Footer Section */ }
+    < footer className = "py-8 relative" >
+      <div className="container mx-auto px-4">
+        <div className="text-center text-gray-400 text-sm">
+          <p>© {new Date().getFullYear()} Yakup Kutluksaman. All rights reserved.</p>
+          <p className="mt-2">This website and its content is protected by copyright law. Any unauthorized use or reproduction of the materials on this site is strictly prohibited.</p>
+        </div>
+      </div>
+        </footer >
+      </main >
 
-      <style jsx global>{`
+    <style jsx global>{`
         @keyframes moveLines {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100%); }
