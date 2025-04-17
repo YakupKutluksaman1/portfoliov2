@@ -13,20 +13,22 @@ export default function LanguageSwitcher() {
         router.push(`/${newLocale}${newPath}`);
     };
 
+    const languageEntries = Object.entries(languages);
+
     return (
         <div className="fixed top-4 right-4 z-50">
             <div className="flex space-x-2">
-                {languages.map((lang) => (
+                {languageEntries.map(([code, name]) => (
                     <button
-                        key={lang}
-                        onClick={() => switchLanguage(lang)}
+                        key={code}
+                        onClick={() => switchLanguage(code)}
                         className={`px-3 py-1 rounded-md text-sm font-medium transition-colors
-              ${currentLocale === lang
+              ${currentLocale === code
                                 ? 'bg-blue-600 text-white'
                                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                     >
-                        {lang.toUpperCase()}
+                        {name}
                     </button>
                 ))}
             </div>
