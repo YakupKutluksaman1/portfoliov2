@@ -20,11 +20,28 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCVModal, setShowCVModal] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     setIsMounted(true);
     fetchNews();
+
+    // Scroll to top butonu için scroll event listener
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+
 
   const fetchNews = async () => {
     try {
@@ -50,8 +67,180 @@ export default function Home() {
   const scrollToSection = (sectionId: string) => {
     setActiveTab(sectionId);
     const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
+    if (element) {
+      const navbarHeight = 80; // Navbar yüksekliği
+      const elementPosition = element.offsetTop;
+      const offsetPosition = elementPosition - navbarHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Projects data
+  const projects = [
+    {
+      id: 1,
+      title: "Barrier-Free Communication System",
+      description: "I developed an AI model that converts sign language to text and text to speech by processing camera input. This system aims to facilitate communication for visually and hearing impaired individuals.",
+      icon: "🤟",
+      technologies: ["Python", "OpenCV", "MediaPipe"],
+      features: ["Real-time hand gesture analysis", "Text-to-speech conversion", "High accuracy rate"],
+      role: "Project Developer & AI Model Designer",
+      status: "Completed",
+      colors: {
+        primary: "blue-500",
+        secondary: "purple-500",
+        text: "blue-400"
+      }
+    },
+    {
+      id: 2,
+      title: "AHAS",
+      description: "This project, supported by TÜBİTAK 2209-A, involves developing a software application to optimize light conditions for plant growth in soilless agriculture systems.",
+      icon: "🌱",
+      technologies: ["Python", "TÜBİTAK 2209-A"],
+      features: ["Smart lighting control", "Environmental data analysis", "Automation system"],
+      role: "Algorithm Designer",
+      status: "TÜBİTAK Supported",
+      colors: {
+        primary: "green-500",
+        secondary: "emerald-500",
+        text: "green-400"
+      }
+    },
+    {
+      id: 3,
+      title: "Pie Chart Analysis",
+      description: "I developed an image processing algorithm that can analyze colors, percentages, and bar graph levels in graphical data. Additionally, I designed a chatbot that allows users to ask questions about graphs.",
+      icon: "📊",
+      technologies: ["LLM", "Image Processing", "Histogram"],
+      features: ["Automatic graph analysis", "LLM-powered interpretation", "Interactive querying"],
+      role: "Algorithm Developer & Chatbot Designer",
+      status: "Completed",
+      colors: {
+        primary: "purple-500",
+        secondary: "pink-500",
+        text: "purple-400"
+      }
+    },
+    {
+      id: 4,
+      title: "Smart Robot Assistant",
+      description: "I am developing a Raspberry Pi-based robot assistant equipped with image processing and object recognition capabilities that can play various games. The project is still in development phase.",
+      icon: "🤖",
+      technologies: ["Python", "OpenCV", "Raspberry Pi"],
+      features: ["Real-time object detection and tracking", "Hardware integration with Raspberry Pi", "Game strategy development"],
+      role: "Project Developer",
+      status: "In Development",
+      colors: {
+        primary: "red-500",
+        secondary: "purple-500",
+        text: "red-400"
+      }
+    },
+    {
+      id: 5,
+      title: "Retail Business Management System",
+      description: "Developed a comprehensive sales and inventory management application for retail businesses. Integrated 8+ components into a single platform with modular architecture, currently actively used in 2 businesses.",
+      icon: "🏪",
+      technologies: ["Python", "PyQt5", "SQLite"],
+      features: ["Barcode integration & multi-payment support", "FIFO inventory tracking & critical stock alerts", "Financial reporting & profit-loss analysis", "Customer credit ledger & debt tracking"],
+      role: "Full-Stack Developer",
+      status: "Active in 2 businesses",
+      colors: {
+        primary: "yellow-500",
+        secondary: "orange-500",
+        text: "yellow-400"
+      }
+    },
+    {
+      id: 6,
+      title: "News Website Project",
+      description: "Developed an unbiased news website using Django framework with automatic news fetching system, real-time economic indicators, and mobile-friendly responsive design.",
+      icon: "📰",
+      technologies: ["Django", "BeautifulSoup4", "Bootstrap 5.3"],
+      features: ["Automatic web scraping & content management", "Real-time economic indicators (currency, gold, BIST)", "SEO optimization & social media integration", "Automated updates with Task Scheduler"],
+      role: "Full-Stack Developer",
+      status: "Live Project",
+      link: "https://www.ozbelhaber.com",
+      colors: {
+        primary: "teal-500",
+        secondary: "cyan-500",
+        text: "teal-400"
+      }
+    }
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % projects.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + projects.length) % projects.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+    setIsAutoPlaying(false); // Pause auto-play when user navigates manually
+    setTimeout(() => setIsAutoPlaying(true), 3000); // Resume after 3 seconds
+  };
+
+  // Auto-play control
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Touch/swipe handling for mobile
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+    setIsAutoPlaying(false); // Pause auto-play when user interacts
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+
+    // Resume auto-play after 3 seconds
+    setTimeout(() => setIsAutoPlaying(true), 3000);
+  };
+
+  // Auto-play carousel
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % projects.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, projects.length]);
 
   if (!isMounted) {
     return null;
@@ -59,9 +248,176 @@ export default function Home() {
 
   return (
     <>
+      {/* Sticky Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-md border-b border-white/5 transition-all duration-300">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            {/* Logo/Name */}
+            <div
+              onClick={() => scrollToSection('home')}
+              className="cursor-pointer group flex items-center gap-3"
+            >
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 via-blue-600 to-slate-700 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:from-blue-500 group-hover:via-slate-300 group-hover:to-blue-500 shadow-lg border border-slate-500/20">
+                <span className="text-slate-100 font-bold text-xl group-hover:text-white transition-colors" style={{ letterSpacing: '-0.15em' }}>YK</span>
+              </div>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-200 via-blue-300 to-slate-200 group-hover:from-blue-200 group-hover:via-slate-100 group-hover:to-blue-200 transition-all duration-300">
+                Yakup Kutluksaman
+              </span>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
+              <button
+                onClick={() => scrollToSection('about')}
+                className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 relative group"
+              >
+                About
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-400 to-blue-400 group-hover:w-full transition-all duration-300"></div>
+              </button>
+              <button
+                onClick={() => scrollToSection('skills')}
+                className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 relative group"
+              >
+                Skills
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-400 to-blue-400 group-hover:w-full transition-all duration-300"></div>
+              </button>
+              <button
+                onClick={() => scrollToSection('projects')}
+                className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 relative group"
+              >
+                Projects
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-400 to-blue-400 group-hover:w-full transition-all duration-300"></div>
+              </button>
+              <button
+                onClick={() => scrollToSection('news')}
+                className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 relative group"
+              >
+                News
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-400 to-blue-400 group-hover:w-full transition-all duration-300"></div>
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 relative group"
+              >
+                Contact
+                <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-slate-400 to-blue-400 group-hover:w-full transition-all duration-300"></div>
+              </button>
+            </div>
+
+            {/* Social Links & CV Button */}
+            <div className="hidden md:flex items-center gap-4">
+              <a
+                href="https://github.com/YakupKutluksaman1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-slate-200 transition-colors p-2 hover:bg-slate-800/30 rounded-lg"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+              </a>
+              <a
+                href="https://linkedin.com/in/yakup-kutluksaman"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-slate-200 transition-colors p-2 hover:bg-slate-800/30 rounded-lg"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+              </a>
+              <button
+                onClick={() => setShowCVModal(true)}
+                className="bg-gradient-to-r from-slate-700/50 via-blue-600/30 to-slate-700/50 hover:from-slate-600/60 hover:via-blue-500/40 hover:to-slate-600/60 text-slate-200 hover:text-white px-4 py-2 rounded-lg border border-slate-500/30 hover:border-slate-400/50 transition-all duration-300 text-sm font-medium"
+              >
+                CV
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="md:hidden text-slate-300 hover:text-slate-100 p-2 hover:bg-slate-800/30 rounded-lg transition-all duration-300"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {showMobileMenu ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Navigation */}
+          {showMobileMenu && (
+            <div className="md:hidden mt-4 pt-4 border-t border-white/10 animate-fade-in">
+              <div className="flex flex-col space-y-2">
+                <button
+                  onClick={() => {
+                    scrollToSection('about');
+                    setShowMobileMenu(false);
+                  }}
+                  className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 text-left"
+                >
+                  About
+                </button>
+                <button
+                  onClick={() => {
+                    scrollToSection('skills');
+                    setShowMobileMenu(false);
+                  }}
+                  className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 text-left"
+                >
+                  Skills
+                </button>
+                <button
+                  onClick={() => {
+                    scrollToSection('projects');
+                    setShowMobileMenu(false);
+                  }}
+                  className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 text-left"
+                >
+                  Projects
+                </button>
+                <button
+                  onClick={() => {
+                    scrollToSection('news');
+                    setShowMobileMenu(false);
+                  }}
+                  className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 text-left"
+                >
+                  News
+                </button>
+                <button
+                  onClick={() => {
+                    scrollToSection('contact');
+                    setShowMobileMenu(false);
+                  }}
+                  className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/30 px-3 py-2 rounded-lg transition-all duration-300 text-left"
+                >
+                  Contact
+                </button>
+                <div className="pt-2 border-t border-slate-600/20">
+                  <button
+                    onClick={() => {
+                      setShowCVModal(true);
+                      setShowMobileMenu(false);
+                    }}
+                    className="w-full bg-gradient-to-r from-slate-700/50 via-blue-600/30 to-slate-700/50 hover:from-slate-600/60 hover:via-blue-500/40 hover:to-slate-600/60 text-slate-200 hover:text-white px-4 py-2 rounded-lg border border-slate-500/30 hover:border-slate-400/50 transition-all duration-300 text-sm font-medium"
+                  >
+                    Request CV
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
       <main className="min-h-screen">
         {/* Hero Section */}
-        <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
+        <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden bg-black pt-20">
           {/* Animasyonlu arka plan */}
           <div className="absolute inset-0">
             {/* Gradyan arka plan */}
@@ -709,212 +1065,151 @@ export default function Home() {
           <div className="container mx-auto px-4 relative z-10">
             <h2 className="text-3xl font-bold text-center mb-16 text-white">My Projects</h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              {/* Barrier-Free Communication System */}
-              <div className="group relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-blue-500/30">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            {/* Project Carousel */}
+            <div
+              className="relative max-w-6xl mx-auto"
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
+            >
+              {/* Main Carousel Container */}
+              <div className="overflow-hidden rounded-2xl md:rounded-3xl">
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
+                >
+                  {projects.map((project, index) => (
+                    <div key={project.id} className="w-full flex-shrink-0 px-2 md:px-4">
+                      <div className={`group relative bg-white/5 backdrop-blur-sm rounded-xl md:rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-${project.colors.primary}/30 h-full`}>
+                        <div className={`absolute inset-0 bg-gradient-to-br from-${project.colors.primary}/10 via-transparent to-${project.colors.secondary}/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
 
-                <div className="relative p-8">
-                  <div className="flex items-center gap-6 mb-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center border border-blue-500/20">
-                      <span className="text-4xl">🤟</span>
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-2">Barrier-Free Communication System</h3>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-3 py-1 rounded-full text-sm bg-blue-500/10 text-blue-300 border border-blue-500/20">Python</span>
-                        <span className="px-3 py-1 rounded-full text-sm bg-blue-500/10 text-blue-300 border border-blue-500/20">OpenCV</span>
-                        <span className="px-3 py-1 rounded-full text-sm bg-blue-500/10 text-blue-300 border border-blue-500/20">MediaPipe</span>
+                        <div className="relative p-4 md:p-8">
+                          {/* Project Header */}
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-4 md:mb-6">
+                            <div className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 bg-${project.colors.primary}/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-${project.colors.primary}/20 group-hover:scale-110 transition-transform duration-300`}>
+                              <span className="text-3xl md:text-5xl">{project.icon}</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3 leading-tight">{project.title}</h3>
+                              <div className="flex flex-wrap gap-1 md:gap-2">
+                                {project.technologies.map((tech, techIndex) => (
+                                  <span
+                                    key={techIndex}
+                                    className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm bg-${project.colors.primary}/10 text-${project.colors.text} border border-${project.colors.primary}/20`}
+                                  >
+                                    {tech}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Project Description */}
+                          <p className="text-gray-300 mb-4 md:mb-6 leading-relaxed text-sm md:text-lg">
+                            {project.description}
+                          </p>
+
+                          {/* Key Features */}
+                          <div className="space-y-4 mb-4 md:mb-6">
+                            <div className="bg-white/5 rounded-lg md:rounded-xl p-4 md:p-6 backdrop-blur-sm">
+                              <h4 className="text-white font-semibold mb-3 md:mb-4 text-base md:text-lg">Key Features:</h4>
+                              <ul className="space-y-2 md:space-y-3 text-gray-300">
+                                {project.features.map((feature, featureIndex) => (
+                                  <li key={featureIndex} className="flex items-start gap-2 md:gap-3">
+                                    <span className={`text-${project.colors.text} mt-1 flex-shrink-0 text-sm md:text-base`}>◆</span>
+                                    <span className="text-sm md:text-base">{feature}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+
+                          {/* Project Footer */}
+                          <div className="pt-4 md:pt-6 border-t border-white/10">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                              <div className="flex flex-wrap items-center gap-2 md:gap-4">
+                                <div className="text-xs md:text-sm text-gray-400">Role:</div>
+                                <div className="text-xs md:text-sm text-white font-medium">{project.role}</div>
+                              </div>
+                              <div className="flex flex-wrap items-center gap-2 md:gap-4">
+                                <div className="text-xs md:text-sm text-gray-400">Status:</div>
+                                {project.link ? (
+                                  <a
+                                    href={project.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`text-xs md:text-sm text-${project.colors.text} hover:text-${project.colors.text}/80 transition-colors underline font-medium`}
+                                  >
+                                    {project.status}
+                                  </a>
+                                ) : (
+                                  <div className="text-xs md:text-sm text-white font-medium">{project.status}</div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    I developed an AI model that converts sign language to text and text to speech by processing camera input. This system aims to facilitate communication for visually and hearing impaired individuals.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="bg-white/5 rounded-xl p-4 backdrop-blur-sm">
-                      <h4 className="text-white font-semibold mb-3">Key Features:</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-center gap-2">
-                          <span className="text-blue-400">◆</span>
-                          Real-time hand gesture analysis
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-blue-400">◆</span>
-                          Text-to-speech conversion
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-blue-400">◆</span>
-                          High accuracy rate
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-white/10">
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm text-gray-400">Role:</div>
-                      <div className="text-sm text-white">Project Developer & AI Model Designer</div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
-              {/* AHAS Project */}
-              <div className="group relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-green-500/30">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Navigation Arrows - Hidden on small screens, shown on hover */}
+              <button
+                onClick={() => {
+                  prevSlide();
+                  setIsAutoPlaying(false);
+                  setTimeout(() => setIsAutoPlaying(true), 3000);
+                }}
+                className="hidden sm:block absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 border border-white/20 opacity-60 hover:opacity-100"
+              >
+                <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
 
-                <div className="relative p-8">
-                  <div className="flex items-center gap-6 mb-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center border border-green-500/20">
-                      <span className="text-4xl">🌱</span>
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-2">AHAS</h3>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-3 py-1 rounded-full text-sm bg-green-500/10 text-green-300 border border-green-500/20">Python</span>
-                        <span className="px-3 py-1 rounded-full text-sm bg-green-500/10 text-green-300 border border-green-500/20">TÜBİTAK 2209-A</span>
-                      </div>
-                    </div>
-                  </div>
+              <button
+                onClick={() => {
+                  nextSlide();
+                  setIsAutoPlaying(false);
+                  setTimeout(() => setIsAutoPlaying(true), 3000);
+                }}
+                className="hidden sm:block absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 border border-white/20 opacity-60 hover:opacity-100"
+              >
+                <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
 
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    This project, supported by TÜBİTAK 2209-A, involves developing a software application to optimize light conditions for plant growth in soilless agriculture systems.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="bg-white/5 rounded-xl p-4 backdrop-blur-sm">
-                      <h4 className="text-white font-semibold mb-3">Key Features:</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-center gap-2">
-                          <span className="text-green-400">◆</span>
-                          Smart lighting control
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-green-400">◆</span>
-                          Environmental data analysis
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-green-400">◆</span>
-                          Automation system
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-white/10">
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm text-gray-400">Role:</div>
-                      <div className="text-sm text-white">Algorithm Designer</div>
-                    </div>
-                  </div>
-                </div>
+              {/* Dots Indicator - Larger for mobile */}
+              <div className="flex justify-center mt-6 md:mt-8 space-x-3 md:space-x-2">
+                {projects.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-4 h-4 md:w-3 md:h-3 rounded-full transition-all duration-300 ${index === currentSlide
+                      ? 'bg-blue-500 scale-125'
+                      : 'bg-white/30 hover:bg-white/50'
+                      }`}
+                  />
+                ))}
               </div>
 
-              {/* Pie Chart Analysis */}
-              <div className="group relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-purple-500/30">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                <div className="relative p-8">
-                  <div className="flex items-center gap-6 mb-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center border border-purple-500/20">
-                      <span className="text-4xl">📊</span>
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-2">Pie Chart Analysis</h3>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-3 py-1 rounded-full text-sm bg-purple-500/10 text-purple-300 border border-purple-500/20">LLM</span>
-                        <span className="px-3 py-1 rounded-full text-sm bg-purple-500/10 text-purple-300 border border-purple-500/20">Image Processing</span>
-                        <span className="px-3 py-1 rounded-full text-sm bg-purple-500/10 text-purple-300 border border-purple-500/20">Histogram</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    I developed an image processing algorithm that can analyze colors, percentages, and bar graph levels in graphical data. Additionally, I designed a chatbot that allows users to ask questions about graphs and receive comprehensive, analysis-focused responses based on processed data.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="bg-white/5 rounded-xl p-4 backdrop-blur-sm">
-                      <h4 className="text-white font-semibold mb-3">Key Features:</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-center gap-2">
-                          <span className="text-purple-400">◆</span>
-                          Automatic graph analysis
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-purple-400">◆</span>
-                          LLM-powered interpretation
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-purple-400">◆</span>
-                          Interactive querying
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-white/10">
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm text-gray-400">Role:</div>
-                      <div className="text-sm text-white">Algorithm Developer & Chatbot Designer</div>
-                    </div>
-                  </div>
-                </div>
+              {/* Project Counter */}
+              <div className="text-center mt-3 md:mt-4">
+                <span className="text-white/60 text-sm md:text-base">
+                  {currentSlide + 1} / {projects.length}
+                </span>
               </div>
 
-              {/* Smart Robot Assistant */}
-              <div className="group relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-red-500/30">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                <div className="relative p-8">
-                  <div className="flex items-center gap-6 mb-6">
-                    <div className="flex-shrink-0 w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20">
-                      <span className="text-4xl">🤖</span>
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-2">Smart Robot Assistant</h3>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-3 py-1 rounded-full text-sm bg-red-500/10 text-red-300 border border-red-500/20">Python</span>
-                        <span className="px-3 py-1 rounded-full text-sm bg-red-500/10 text-red-300 border border-red-500/20">OpenCV</span>
-                        <span className="px-3 py-1 rounded-full text-sm bg-red-500/10 text-red-300 border border-red-500/20">Raspberry Pi</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    I am developing a Raspberry Pi-based robot assistant equipped with image processing and object recognition capabilities that can play various games. The project is still in development phase, combining my skills in artificial intelligence and robotics.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="bg-white/5 rounded-xl p-4 backdrop-blur-sm">
-                      <h4 className="text-white font-semibold mb-3">Development Stages:</h4>
-                      <ul className="space-y-2 text-gray-300">
-                        <li className="flex items-center gap-2">
-                          <span className="text-red-400">◆</span>
-                          Real-time object detection and tracking
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-red-400">◆</span>
-                          Hardware integration with Raspberry Pi
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="text-red-400">◆</span>
-                          Game strategy development
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-white/10">
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm text-gray-400">Status:</div>
-                      <div className="text-sm text-white">In Development</div>
-                    </div>
-                  </div>
-                </div>
+              {/* Mobile Swipe Hint */}
+              <div className="sm:hidden text-center mt-4">
+                <span className="text-white/40 text-xs">
+                  ← Swipe to navigate →
+                </span>
               </div>
             </div>
           </div>
@@ -1167,6 +1462,31 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Scroll to Top Button */}
+        {showScrollToTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 z-50 group bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 focus:scale-95 animate-fade-in"
+          >
+            <div className="relative">
+              <svg
+                className="w-6 h-6 transform group-hover:-translate-y-1 transition-transform duration-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 10l7-7m0 0l7 7m-7-7v18"
+                />
+              </svg>
+              <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+          </button>
+        )}
+
         {/* Footer Section */}
         <footer className="py-8 relative">
           <div className="container mx-auto px-4">
@@ -1194,6 +1514,11 @@ export default function Home() {
           50% { transform: translate(-20px, 20px); }
         }
 
+        @keyframes float-slow {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(-30px, 30px); }
+        }
+
         @keyframes floatParticle {
           0% { transform: translate(0, 0) rotate(0deg); }
           50% { transform: translate(100px, 100px) rotate(180deg); }
@@ -1204,6 +1529,67 @@ export default function Home() {
           0% { transform: translateX(-100%); opacity: 0; }
           50% { opacity: 1; }
           100% { transform: translateX(100%); opacity: 0; }
+        }
+
+        @keyframes wave {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        @keyframes wave-slow {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        @keyframes wave-vertical {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.6; }
+        }
+
+        .animate-wave {
+          animation: wave 20s linear infinite;
+        }
+
+        .animate-wave-slow {
+          animation: wave-slow 25s linear infinite;
+        }
+
+        .animate-wave-vertical {
+          animation: wave-vertical 20s linear infinite;
+        }
+
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 3s ease infinite;
+        }
+
+        .animate-pulse-slow {
+          animation: pulse-slow 4s ease-in-out infinite;
+        }
+
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+
+        /* Navbar için scroll offset */
+        section[id] {
+          scroll-margin-top: 80px;
         }
       `}</style>
     </>
